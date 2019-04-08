@@ -1,0 +1,14 @@
+{
+    "name": "hoaaah/ruang_kosong",
+    "description": "Old Repository of Ruang-Kosong",
+    "require": {
+        "yiisoft/yii": "1.1.*",
+        "yiiext/migrate-command": "^0.8.0"
+    },
+    "authors": [
+        {
+            "name": "Heru Arief Wijaya",
+            "email": "hoaaah.arief@gmail.com"
+        }
+    ]
+}

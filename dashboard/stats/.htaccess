@@ -1,0 +1,7 @@
+AuthName "tapd.bpkad-lubuklinggaukota.net statistics"
+AuthType Basic
+AuthUserFile /home/tapd-llg/.stats-htpasswd
+require valid-user
+<Files .stats-htpasswd>
+deny from all
+</Files>
