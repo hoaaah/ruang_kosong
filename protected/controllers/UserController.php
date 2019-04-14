@@ -32,7 +32,7 @@ class UserController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('update', 'call', 'mine', 'bantal', 'jadwal', 'jadwalkuliah', 'jadwalg', 'loadjurusan', 'loadsemester', 'loadkelas','ubahpwd'),
+				'actions'=>array('update', 'cetak', 'call', 'mine', 'bantal', 'jadwal', 'jadwalkuliah', 'jadwalg', 'loadjurusan', 'loadsemester', 'loadkelas','ubahpwd'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -249,38 +249,38 @@ class UserController extends Controller
 			$this->redirect(Yii::app()->request->urlReferrer);
 		}ELSE{
 
-                        //awal bagian isi tabel
-                        /*bakal jalan
-                        $fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, d.name AS mata_kuliah FROM
-                        (SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
-                        FROM r_guna a 
-                        WHERE a.tanggal_guna >= "'.date('Y-m-d').'" AND a.tanggal_guna <= DATE_ADD("'.date('Y-m-d').'", INTERVAL 2 WEEK) AND user_id = '.Yii::app()->user->Id.' AND a.status = 1)
-                        a
-                        INNER JOIN r_session b ON a.session_start = b.id
-                        INNER JOIN r_kelas c ON a.kelas_id = c.id
-                        INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
-                        ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();
-                         Saat ini yg dibawah nampilin semua jadwal sampe banyak banget
-                         */
-                        $fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, d.name AS mata_kuliah FROM
-                        (SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
-                        FROM r_guna a 
-                        WHERE a.tanggal_guna >= "'.date('Y-m-d').'"  AND user_id = '.Yii::app()->user->Id.' AND a.status = 1)
-                        a
-                        INNER JOIN r_session b ON a.session_start = b.id
-                        INNER JOIN r_kelas c ON a.kelas_id = c.id
-                        INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
-                        ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();  
-                        $prvtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, d.name AS mata_kuliah, CASE WHEN a.status = 0 THEN "Batal" END AS status FROM
-                        (SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
-                        FROM r_guna a 
-                        WHERE (a.tanggal_guna < "'.date('Y-m-d').'" OR status = 0) AND user_id = '.Yii::app()->user->Id.')
-                        a
-                        INNER JOIN r_session b ON a.session_start = b.id
-                        INNER JOIN r_kelas c ON a.kelas_id = c.id
-                        INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
-                        ORDER BY tanggal_guna DESC, session_start ASC')->queryAll();                        
-                        //akhir bagian isi tabel
+			//awal bagian isi tabel
+			/*bakal jalan
+			$fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah FROM
+			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
+			FROM r_guna a 
+			WHERE a.tanggal_guna >= "'.date('Y-m-d').'" AND a.tanggal_guna <= DATE_ADD("'.date('Y-m-d').'", INTERVAL 2 WEEK) AND user_id = '.Yii::app()->user->Id.' AND a.status = 1)
+			a
+			INNER JOIN r_session b ON a.session_start = b.id
+			INNER JOIN r_kelas c ON a.kelas_id = c.id
+			INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
+			ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();
+				Saat ini yg dibawah nampilin semua jadwal sampe banyak banget
+				*/
+			$fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah FROM
+			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
+			FROM r_guna a 
+			WHERE a.tanggal_guna >= "'.date('Y-m-d').'"  AND user_id = '.Yii::app()->user->Id.' AND a.status = 1)
+			a
+			INNER JOIN r_session b ON a.session_start = b.id
+			INNER JOIN r_kelas c ON a.kelas_id = c.id
+			-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
+			ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();  
+			$prvtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, CASE WHEN a.status = 0 THEN "Batal" END AS status FROM
+			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
+			FROM r_guna a 
+			WHERE (a.tanggal_guna < "'.date('Y-m-d').'" OR status = 0) AND user_id = '.Yii::app()->user->Id.')
+			a
+			INNER JOIN r_session b ON a.session_start = b.id
+			INNER JOIN r_kelas c ON a.kelas_id = c.id
+			-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
+			ORDER BY tanggal_guna DESC, session_start ASC')->queryAll();                        
+			//akhir bagian isi tabel
                     
 			$model=new User('search');
 			$model->unsetAttributes();  // clear any default values
@@ -313,7 +313,24 @@ class UserController extends Controller
 			}
 		}
 			$this->redirect(Yii::app()->request->urlReferrer);
-	}	
+	}
+
+	public function actionCetak($id)
+	{
+		$model = RGuna::model()->find('id=:id', [':id' => $id]);
+		$event = RGuna::model()->findAll('user_id = :user_id AND date(DateCreate) = :DateCreate AND session_length = :session_length AND mata_kuliah = :mata_kuliah AND jumlah_hari = :jumlah_hari', [
+			':user_id' => $model->user_id,
+			':DateCreate' => date('Y-m-d', strtotime($model->DateCreate)),
+			':session_length' => $model->session_length,
+			':mata_kuliah' => $model->mata_kuliah,
+			':jumlah_hari' => $model->jumlah_hari,
+		]);
+		// return var_dump(end($event)['tanggal_guna']);
+		$this->render('cetak', [
+			'model' => $model,
+			'event' => $event
+		]);
+	}
 	
 	public function actionJadwal()
 	{
@@ -632,14 +649,14 @@ class UserController extends Controller
 			//$tanggal = date('Y-m-d H:i:s');
 
 			//awal bagian isi tabel
-			$fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, d.name AS mata_kuliah FROM
+			$fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah FROM
 			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
 			FROM r_guna a 
 			WHERE a.tanggal_guna >= "'.date('Y-m-d').'" AND  user_id = '.Yii::app()->user->Id.' AND a.status = 1)
 			a
 			INNER JOIN r_session b ON a.session_start = b.id
 			INNER JOIN r_kelas c ON a.kelas_id = c.id
-			INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
+			-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
 			ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();   
 			$mk = CHtml::listData(MataKuliah::model()->findAll(), 'id', 'name');
 			IF(ISSET($this->user_log['jurusan_id']) && ISSET($this->user_log['semester'])){
@@ -651,13 +668,14 @@ class UserController extends Controller
 			{
 				$model->attributes=$_POST['Bookguna'];
 				$tgl = new DateTime("$model->tanggal_guna");
+				$jumlah_hari = $model->weeks;
 				$v = 0;
 				for($k = 0 ; $k <= ($model->weeks-1); $k++)
 				{
 					//$v = $k * 7;
 					//$tgl = $tgl->modify('+'.$v.' day');
 						IF($model->mata_kuliah == '') BREAK;
-                                                $session_length = array();
+						$session_length = array();
 						IF($model->col1 == 1){
 						Yii::app()->db->createCommand()
 						->insert('t_guna', array(
@@ -923,16 +941,23 @@ class UserController extends Controller
 						$session_length[] = 22;
 						}
 						Yii::app()->db->createCommand()
-						->insert('r_guna', array(
-											'DateCreate'=>date('Y-m-d H:i:s'),
-											'user_id'=> Yii::app()->user->Id,
-											'kelas_id'=> $model->kelas_id,
-											'tanggal_guna'=> $tgl->format('Y-m-d'),
-											'session_length'=> implode(".", $session_length),
-											'mata_kuliah' =>$model->mata_kuliah,
-											'status' =>1,
-											));
-						$v = 7;
+						->insert('r_guna', [
+							'DateCreate'=>date('Y-m-d H:i:s'),
+							'user_id'=> Yii::app()->user->Id,
+							'kelas_id'=> $model->kelas_id,
+							'tanggal_guna'=> $tgl->format('Y-m-d'),
+							'session_length'=> implode(".", $session_length),
+							'mata_kuliah' =>$model->mata_kuliah,
+							'status' =>1,
+							'dari' => $model->dari,
+							'jumlah_peserta' => $model->jumlah_peserta,
+							'penanggung_jawab' => $model->penanggung_jawab,
+							'konsumsi' => $model->konsumsi,
+							'tor_kak' => $model->tor_kak,
+							'yang_mengajukan' => $model->yang_mengajukan,
+							'jumlah_hari' => $jumlah_hari
+						]);
+						$v = 1;
 						$tgl = $tgl->modify('+'.$v.' day');
 				}
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('jadwalkuliah'));
@@ -949,8 +974,7 @@ class UserController extends Controller
 
 	public function actionLoadkelas()
 	{
-	   $data=Kelas::model()->findAll('building_id=:gedung_id', 
-	   array(':gedung_id'=>(int) $_POST['gedung_id']));
+	   $data=Kelas::model()->findAll('building_id=:gedung_id AND ruang_bidang = 0', [':gedung_id'=>(int) $_POST['gedung_id']]);
 	 
 	   $data=CHtml::listData($data,'id','kelas');
 	 

@@ -196,7 +196,8 @@ $this->widget(
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'mata_kuliah'); ?>
-		<?php echo CHtml::activeDropDownList($model, 'mata_kuliah', $mk, array('prompt'=>'-Mata Kuliah-'));?>
+		<?php // echo CHtml::activeDropDownList($model, 'mata_kuliah', $mk, array('prompt'=>'-Mata Kuliah-'));?>
+		<?php echo $form->textField($model,'mata_kuliah', ['size' => 100, 'maxlength' => 100]); ?>
 		<?php echo $form->error($model,'mata_kuliah'); ?>
 	</div>
     
@@ -325,6 +326,42 @@ $this->widget(
 		<?php echo $form->textField($model,'weeks',array('size'=>20,'maxlength'=>20)); ?>
 		<?php echo $form->error($model,'weeks'); ?>
 	</div>
+    
+	<div class="row">
+		<?php echo $form->labelEx($model,'dari'); ?>
+		<?php echo $form->textField($model,'dari'); ?>
+		<?php echo $form->error($model,'dari'); ?>
+	</div>
+	    
+	<div class="row">
+		<?php echo $form->labelEx($model,'jumlah_peserta'); ?>
+		<?php echo $form->textField($model,'jumlah_peserta'); ?>
+		<?php echo $form->error($model,'jumlah_peserta'); ?>
+	</div>
+	    
+	<div class="row">
+		<?php echo $form->labelEx($model,'penanggung_jawab'); ?>
+		<?php echo $form->textField($model,'penanggung_jawab',array('size'=>20,'maxlength'=>20)); ?>
+		<?php echo $form->error($model,'penanggung_jawab'); ?>
+	</div>
+	    
+	<div class="row">
+		<?php echo $form->labelEx($model,'yang_mengajukan'); ?>
+		<?php echo $form->textField($model,'yang_mengajukan',array('size'=>20,'maxlength'=>20)); ?>
+		<?php echo $form->error($model,'weeks'); ?>
+	</div>
+	    
+	<div class="row">
+		<?php echo $form->labelEx($model,'konsumsi'); ?>
+		<?php echo $form->checkBox($model,'konsumsi');?>
+		<?php echo $form->error($model,'konsumsi'); ?>
+	</div>
+		    
+	<div class="row">
+		<?php echo $form->labelEx($model,'tor_kak'); ?>
+		<?php echo $form->checkBox($model,'tor_kak');?>
+		<?php echo $form->error($model,'tor_kak'); ?>
+	</div>	
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Book'); ?>
 	</div>

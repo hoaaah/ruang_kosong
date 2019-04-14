@@ -24,7 +24,7 @@ return array(
 		/**/
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
-			'password'=>'siapa?',
+			'password'=>'123456',
 			//tambahan untuk yiibooster!!!
 			'generatorPaths'=>array(
 			'bootstrap.gii', // boostrap generator
