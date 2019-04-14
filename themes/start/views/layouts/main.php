@@ -29,6 +29,7 @@ $cs->registerScriptFile(Yii::app()->theme->baseUrl . "/assets/js/main.js", CClie
     <link href="//netdna.bootstrapcdn.com/bootstrap/<?php echo $bootstrapVersion; ?>/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/<?php echo $fontAwesomeVersion; ?>/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?php echo Yii::app()->theme->baseUrl; ?>/assets/css/main.css" rel="stylesheet">
+    <link href="<?php echo Yii::app()->baseUrl; ?>/images/fontawesome-5.8.1/css/all.min.css" rel="stylesheet">
     <?php // Javascript  ?>
     <script>var baseUrl = "<?php echo Yii::app()->baseUrl; ?>";</script>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
