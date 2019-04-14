@@ -261,7 +261,7 @@ echo'
 			'.CHtml::link($t['kelas'], array('/ComKelas/index', 'id'=>$t['kelas_id'])).$form->hiddenField($model,'kelas_id',array('value'=>$t['kelas_id'])).'
 		</div>';
 		
-/*	IF($t['col1'] == NULL){
+/*	IF($t['col1'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col1').'
@@ -273,7 +273,9 @@ echo'
 		</div>';
 	}
 */	
-	IF($t['col2'] == NULL){
+	
+	$checkRuangBidang = RKelas::model()->find('ruang_bidang = 1 AND id = :kelas_id', [':kelas_id' => $t['kelas_id']]);
+	IF($t['col2'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col2').'
@@ -285,7 +287,7 @@ echo'
 			'.substr($t['col2'],0,6).'
 		</div>';
 	}
-	IF($t['col3'] == NULL){
+	IF($t['col3'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col3').'
@@ -297,7 +299,7 @@ echo'
 			'.substr($t['col3'],0,6).'
 		</div>';
 	}
-	IF($t['col4'] == NULL){
+	IF($t['col4'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col4').'
@@ -309,7 +311,7 @@ echo'
 			'.substr($t['col4'],0,6).'
 		</div>';
 	}
-	IF($t['col5'] == NULL){
+	IF($t['col5'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col5').'
@@ -321,7 +323,7 @@ echo'
 			'.substr($t['col5'],0,6).'
 		</div>';
 	}
-	IF($t['col6'] == NULL){
+	IF($t['col6'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col6').'
@@ -333,7 +335,7 @@ echo'
 			'.substr($t['col6'],0,6).'
 		</div>';
 	}
-	IF($t['col7'] == NULL){
+	IF($t['col7'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col7').'
@@ -345,7 +347,7 @@ echo'
 			'.substr($t['col7'],0,6).'
 		</div>';
 	}
-	IF($t['col8'] == NULL){
+	IF($t['col8'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col8').'
@@ -357,7 +359,7 @@ echo'
 			'.substr($t['col8'],0,6).'
 		</div>';
 	}
-	IF($t['col9'] == NULL){
+	IF($t['col9'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col9').'
@@ -369,7 +371,7 @@ echo'
 			'.substr($t['col9'],0,6).'
 		</div>';
 	}
-	IF($t['col10'] == NULL){
+	IF($t['col10'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col10').'
@@ -381,7 +383,7 @@ echo'
 			'.substr($t['col10'],0,6).'
 		</div>';
 	}
-	IF($t['col11'] == NULL){
+	IF($t['col11'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col11').'
@@ -393,7 +395,7 @@ echo'
 			'.substr($t['col11'],0,6).'
 		</div>';
 	}
-	IF($t['col12'] == NULL){
+	IF($t['col12'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col12').'
@@ -405,7 +407,7 @@ echo'
 			'.substr($t['col12'],0,6).'
 		</div>';
 	}
-	IF($t['col13'] == NULL){
+	IF($t['col13'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col13').'
@@ -417,7 +419,7 @@ echo'
 			'.substr($t['col13'],0,6).'
 		</div>';
 	}
-	IF($t['col14'] == NULL){
+	IF($t['col14'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col14').'
@@ -429,7 +431,7 @@ echo'
 			'.substr($t['col14'],0,6).'
 		</div>';
 	}
-	IF($t['col15'] == NULL){
+	IF($t['col15'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col15').'
@@ -441,7 +443,7 @@ echo'
 			'.substr($t['col15'],0,6).'
 		</div>';
 	}
-	IF($t['col16'] == NULL){
+	IF($t['col16'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col16').'
@@ -453,7 +455,7 @@ echo'
 			'.substr($t['col16'],0,6).'
 		</div>';
 	}
-	IF($t['col17'] == NULL){
+	IF($t['col17'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col17').'
@@ -465,7 +467,7 @@ echo'
 			'.substr($t['col17'],0,6).'
 		</div>';
 	}
-	IF($t['col18'] == NULL){
+	IF($t['col18'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col18').'
@@ -477,7 +479,7 @@ echo'
 			'.substr($t['col18'],0,6).'
 		</div>';
 	}
-	IF($t['col19'] == NULL){
+	IF($t['col19'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col19').'
@@ -489,7 +491,7 @@ echo'
 			'.substr($t['col19'],0,6).'
 		</div>';
 	}
-	IF($t['col20'] == NULL){
+	IF($t['col20'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col20').'
@@ -501,7 +503,7 @@ echo'
 			'.substr($t['col20'],0,6).'
 		</div>';
 	}
-/*	IF($t['col21'] == NULL){
+/*	IF($t['col21'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col21').'
@@ -513,7 +515,7 @@ echo'
 			'.CHtml::link(substr($t['col21'],0,6), array('del', 'id'=>$t['kelas_id'].'-21-'.$tanggal->format('Y-m-d'))).'
 		</div>';
 	}
-	IF($t['col22'] == NULL){
+	IF($t['col22'] == NULL && !$checkRuangBidang){
 		echo'
 		<div class="Cell">
 			'.$form->checkBox($model,'col22').'
