@@ -26,6 +26,14 @@
                             </li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#ruang"><i class="fa fa-fw fa-wrench"></i> Pemakaian Ruang <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="ruang" class="collapse">
+                            <li>
+                                <?php echo CHtml::link('Persetujuan Pemakaian',array('/pakai-ruang/')); ?>
+                            </li>
+                        </ul>
+                    </li>
                     <li <?php IF($this->uniqueid == 'user') echo 'class="active"'?>>
                         <?php echo CHtml::link('<i class="fa fa-user"></i>  User',array('user/')); ?>
                     </li>     
