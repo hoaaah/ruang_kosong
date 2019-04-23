@@ -1,12 +1,13 @@
 <?php
 
-class MataKuliahController extends Controller
+class PakaiRuangController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
+	public $Ctitle='Persetujuan Penggunaan Ruang'; //Ini akan ditampilkan sebagai judul page
 
 	/**
 	 * @return array action filters
@@ -27,16 +28,12 @@ class MataKuliahController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('view'),
-				'users'=>array('*'),
-			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','view', 'create','update', 'loadjurusan', 'loadsemester','delete'),
+				'actions'=>array('index','view', 'create','update', 'tolak', 'setuju'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin'),
+				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -49,8 +46,6 @@ class MataKuliahController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public $Ctitle='Mata Kuliah'; //Ini akan ditampilkan sebagai judul page
-        
 	public function actionView($id)
 	{
 		$this->render('view',array(
@@ -64,14 +59,14 @@ class MataKuliahController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new MataKuliah;
+		$model=new RGuna;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['MataKuliah']))
+		if(isset($_POST['RGuna']))
 		{
-			$model->attributes=$_POST['MataKuliah'];
+			$model->attributes=$_POST['RGuna'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -93,14 +88,53 @@ class MataKuliahController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['MataKuliah']))
+		if(isset($_POST['RGuna']))
 		{
-			$model->attributes=$_POST['MataKuliah'];
+			$model->attributes=$_POST['RGuna'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('update',array(
+			'model'=>$model,
+		));
+	}
+
+	
+	public function actionTolak($id)
+	{
+		$model=$this->loadModel($id);
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['RGuna']))
+		{
+			$model->attributes=$_POST['RGuna'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->id));
+		}
+
+		$this->renderPartial('_form',array(
+			'model'=>$model,
+		));
+	}
+
+	
+	public function actionSetuju($id)
+	{
+		$id = explode(".", $id);
+		$model=$this->loadModel($id[0]);
+		$model->status = 2;
+
+		if(isset($_POST['RGuna']))
+		{
+			$model->attributes=$_POST['RGuna'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->id));
+		}
+
+		$this->renderPartial('_form',array(
 			'model'=>$model,
 		));
 	}
@@ -124,13 +158,22 @@ class MataKuliahController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$model=new MataKuliah('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['MataKuliah']))
-			$model->attributes=$_GET['MataKuliah'];
+		$fwdtbl= Yii::app()->db->createCommand('SELECT GROUP_CONCAT(a.id SEPARATOR ".") AS id, a.status, GROUP_CONCAT(a.tanggal_guna SEPARATOR";") AS tanggal_guna,a.session_start, a.session_end, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, CONCAT(LEFT(e.name,2),".",MID(e.name,3,2)) AS jam_selesai, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, a.jumlah_hari FROM
+		(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start, SUBSTRING_INDEX(a.session_length,".", -1) AS session_end
+		FROM r_guna a 
+		WHERE a.tanggal_guna >= "'.date('Y-m-d').'"  AND a.status = 1)
+		a
+		INNER JOIN r_session b ON a.session_start = b.id
+		INNER JOIN r_kelas c ON a.kelas_id = c.id
+		INNER JOIN r_session e ON a.session_end = e.id
+		-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
+		GROUP BY a.user_id, a.kelas_id, a.session_length, a.mata_kuliah, a.dari, a.jumlah_peserta, a.penanggung_jawab, a.konsumsi, a.tor_kak, a.yang_mengajukan, a.jumlah_hari
+		ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();
+		$gridDataProvider = new CArrayDataProvider($fwdtbl, array('keyField' => 'id','pagination'=>array('pageSize'=> 8,)));
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('index',array(
+			'fwdtbl' => $fwdtbl,
+			'gridDataProvider' => $gridDataProvider,
 		));
 	}
 
@@ -139,10 +182,10 @@ class MataKuliahController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new MataKuliah('search');
+		$model=new RGuna('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['MataKuliah']))
-			$model->attributes=$_GET['MataKuliah'];
+		if(isset($_GET['RGuna']))
+			$model->attributes=$_GET['RGuna'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -153,35 +196,12 @@ class MataKuliahController extends Controller
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return MataKuliah the loaded model
+	 * @return RGuna the loaded model
 	 * @throws CHttpException
 	 */
-	public function actionLoadjurusan()
-	{
-	   $data=Jurusan::model()->findAll('kampus_id=:kampus_id', 
-	   array(':kampus_id'=>(int) $_POST['kampus_id']));
-	 
-	   $data=CHtml::listData($data,'id','name');
-	 
-	   echo "<option value=''>--Jurusan(opsional bagi non-STAN)--</option>";
-	   foreach($data as $value=>$MataKuliah_jurusan_id)
-	   echo CHtml::tag('option', array('value'=>$value),CHtml::encode($MataKuliah_jurusan_id),true);
-	}	
-
-	public function actionLoadsemester()
-	{
-	   $data=MataKuliah::model()->findAllBySql('SELECT jurusan_id, semester FROM r_mata_kuliah WHERE jurusan_id = :jurusan_id GROUP BY jurusan_id, semester',  array(':jurusan_id'=>(int) $_POST['jurusan_id']));
-	 
-	   $data=CHtml::listData($data,'semester','semester');
-	 
-	   echo "<option value=''>--Jurusan(opsional bagi non-STAN)--</option>";
-	   foreach($data as $value=>$MataKuliah_jurusan_id)
-	   echo CHtml::tag('option', array('value'=>$value),CHtml::encode($MataKuliah_jurusan_id),true);
-	}
-        
 	public function loadModel($id)
 	{
-		$model=MataKuliah::model()->findByPk($id);
+		$model=RGuna::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -189,11 +209,11 @@ class MataKuliahController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param MataKuliah $model the model to be validated
+	 * @param RGuna $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='mata-kuliah-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='rguna-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
