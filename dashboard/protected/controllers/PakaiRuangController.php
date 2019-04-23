@@ -205,7 +205,8 @@ class PakaiRuangController extends Controller
 
 	public function actionCetak($id)
 	{
-		$model = RGuna::model()->find('id=:id', [':id' => $id]);
+		$id = explode(".", $id);
+		$model = RGuna::model()->find('id=:id', [':id' => $id[0]]);
 		$event = RGuna::model()->findAll('user_id = :user_id AND date(DateCreate) = :DateCreate AND session_length = :session_length AND mata_kuliah = :mata_kuliah AND jumlah_hari = :jumlah_hari', [
 			':user_id' => $model->user_id,
 			':DateCreate' => date('Y-m-d', strtotime($model->DateCreate)),
