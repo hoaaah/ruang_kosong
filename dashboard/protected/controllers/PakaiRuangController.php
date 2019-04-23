@@ -103,7 +103,10 @@ class PakaiRuangController extends Controller
 	
 	public function actionTolak($id)
 	{
-		$model=$this->loadModel($id);
+		$id = explode(".", $id);
+		$model=$this->loadModel($id[0]);
+		$model->status = 0;
+		$model->approval_date = date("Y-m-d");
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -126,6 +129,7 @@ class PakaiRuangController extends Controller
 		$id = explode(".", $id);
 		$model=$this->loadModel($id[0]);
 		$model->status = 2;
+		$model->approval_date = date("Y-m-d");
 
 		if(isset($_POST['RGuna']))
 		{

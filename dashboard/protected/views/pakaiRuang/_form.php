@@ -3,8 +3,8 @@
 /* @var $model RGuna */
 /* @var $form CActiveForm */
 ?>
-
-<div class="form">
+<div class="row">
+<div class="form col-md-12">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'rguna-form',
@@ -20,8 +20,22 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'status'); ?>
-		<?php echo $form->textField($model,'status'); ?>
+		<?php
+			$statuses = [
+				0 => "Tolak",
+				1 => "Diajukan",
+				2 => "Setuju"
+			];
+			$this->widget('ext.select2.ESelect2', [
+				'model'=>$model,
+				'attribute'=>'status',
+				'data'=> $statuses,
+				'htmlOptions' => [
+					'class' => 'form form-control col-md-6',
+					'disabled' => true,
+				]
+			]);
+		?>
 		<?php echo $form->error($model,'status'); ?>
 	</div>
 
@@ -33,12 +47,12 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'approval_date'); ?>
-		<?php echo $form->textField($model,'approval_date', ['class' => 'form form-control']); ?>
+		<?php echo $form->textField($model,'approval_date', ['class' => 'form form-control', 'readonly' => true]); ?>
 		<?php echo $form->error($model,'approval_date'); ?>
 	</div>
 	
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+		<?php echo CHtml::submitButton('Simpan', ['class' => 'btn btn-xs btn-info']); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

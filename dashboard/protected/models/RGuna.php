@@ -83,8 +83,8 @@ class RGuna extends CActiveRecord
 			'penanggung_jawab' => 'Penanggung Jawab',
 			'konsumsi' => 'Konsumsi',
 			'tor_kak' => 'Tor Kak',
-			'approver' => 'Approver',
-			'approval_date' => 'Upproval Date',
+			'approver' => 'Yang menyetujui',
+			'approval_date' => 'Tanggal Persetujuan',
 			'catatan' => 'Catatan',
 			'yang_mengajukan' => 'Yang Mengajukan'
 		);
