@@ -30,7 +30,7 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#ruang"><i class="fa fa-fw fa-wrench"></i> Pemakaian Ruang <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="ruang" class="collapse">
                             <li>
-                                <?php echo CHtml::link('Persetujuan Pemakaian',array('/pakai-ruang/')); ?>
+                                <?php echo CHtml::link('Persetujuan Pemakaian',array('/PakaiRuang/')); ?>
                             </li>
                         </ul>
                     </li>
