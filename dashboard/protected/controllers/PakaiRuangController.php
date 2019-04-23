@@ -29,7 +29,7 @@ class PakaiRuangController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','view', 'create','update', 'tolak', 'setuju'),
+				'actions'=>array('index','view', 'create','update', 'tolak', 'setuju', 'cetak'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -113,9 +113,20 @@ class PakaiRuangController extends Controller
 
 		if(isset($_POST['RGuna']))
 		{
-			$model->attributes=$_POST['RGuna'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+
+			foreach ($id as $id) {
+				$model=$this->loadModel($id);
+				$model->attributes=$_POST['RGuna'];
+				$model->status = 0;
+				Guna::model()->deleteAll('user_id = :user_id AND kelas_id = :kelas_id AND tanggal_guna = :tanggal_guna AND mata_kuliah = :mata_kuliah',[
+					':user_id' => $model->user_id,
+					':kelas_id' => $model->kelas_id,
+					':tanggal_guna' => $model->tanggal_guna,
+					':mata_kuliah' => $model->mata_kuliah
+				]);
+				$model->save();
+			}
+			$this->redirect(Yii::app()->request->urlReferrer);
 		}
 
 		$this->renderPartial('_form',array(
@@ -133,9 +144,13 @@ class PakaiRuangController extends Controller
 
 		if(isset($_POST['RGuna']))
 		{
-			$model->attributes=$_POST['RGuna'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			foreach ($id as $id) {
+				$model=$this->loadModel($id);
+				$model->attributes=$_POST['RGuna'];
+				$model->status = 2;
+				$model->save();
+			}
+			$this->redirect(Yii::app()->request->urlReferrer);
 		}
 
 		$this->renderPartial('_form',array(
@@ -162,17 +177,24 @@ class PakaiRuangController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$fwdtbl= Yii::app()->db->createCommand('SELECT GROUP_CONCAT(a.id SEPARATOR ".") AS id, a.status, GROUP_CONCAT(a.tanggal_guna SEPARATOR";") AS tanggal_guna,a.session_start, a.session_end, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, CONCAT(LEFT(e.name,2),".",MID(e.name,3,2)) AS jam_selesai, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, a.jumlah_hari FROM
+		$fwdtbl= Yii::app()->db->createCommand('SELECT 
+		CASE
+			WHEN a.status = 1 THEN 0
+			ELSE 1
+		END AS urutan_status,
+		GROUP_CONCAT(a.id SEPARATOR ".") AS id, a.status, GROUP_CONCAT(a.tanggal_guna SEPARATOR";") AS tanggal_guna,a.session_start, a.session_end, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, CONCAT(LEFT(e.name,2),".",MID(e.name,3,2)) AS jam_selesai, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, a.jumlah_hari FROM
 		(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start, SUBSTRING_INDEX(a.session_length,".", -1) AS session_end
 		FROM r_guna a 
-		WHERE a.tanggal_guna >= "'.date('Y-m-d').'"  AND a.status = 1)
+		WHERE DateCreate <= NOW()
+		-- a.tanggal_guna >= "'.date('Y-m-d').'"  AND a.status = 1
+		)
 		a
 		INNER JOIN r_session b ON a.session_start = b.id
 		INNER JOIN r_kelas c ON a.kelas_id = c.id
 		INNER JOIN r_session e ON a.session_end = e.id
 		-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
 		GROUP BY a.user_id, a.kelas_id, a.session_length, a.mata_kuliah, a.dari, a.jumlah_peserta, a.penanggung_jawab, a.konsumsi, a.tor_kak, a.yang_mengajukan, a.jumlah_hari
-		ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();
+		ORDER BY urutan_status ASC, tanggal_guna DESC, session_start ASC')->queryAll();
 		$gridDataProvider = new CArrayDataProvider($fwdtbl, array('keyField' => 'id','pagination'=>array('pageSize'=> 8,)));
 
 		$this->render('index',array(
@@ -180,6 +202,23 @@ class PakaiRuangController extends Controller
 			'gridDataProvider' => $gridDataProvider,
 		));
 	}
+
+	public function actionCetak($id)
+	{
+		$model = RGuna::model()->find('id=:id', [':id' => $id]);
+		$event = RGuna::model()->findAll('user_id = :user_id AND date(DateCreate) = :DateCreate AND session_length = :session_length AND mata_kuliah = :mata_kuliah AND jumlah_hari = :jumlah_hari', [
+			':user_id' => $model->user_id,
+			':DateCreate' => date('Y-m-d', strtotime($model->DateCreate)),
+			':session_length' => $model->session_length,
+			':mata_kuliah' => $model->mata_kuliah,
+			':jumlah_hari' => $model->jumlah_hari,
+		]);
+		// return var_dump(end($event)['tanggal_guna']);
+		$this->render('cetak', [
+			'model' => $model,
+			'event' => $event
+		]);
+	}	
 
 	/**
 	 * Manages all models.

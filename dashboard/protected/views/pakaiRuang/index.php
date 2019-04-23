@@ -21,87 +21,96 @@ $this->widget(
         'dataProvider' => $gridDataProvider,
         'template' => "{items}\n{pager}",
         'columns' => [
-			[
-				'name'=>'tanggal_guna', 
-				'header'=>'Tanggal', 
-				'type' => 'raw',
-				'value' => function($model) {
-					$date = explode(';', $model['tanggal_guna']);
-					$length = count($date);
-					if($model['jumlah_hari'] == 1 || $model['jumlah_hari'] == 0)
-					{
-						return date_format(date_create($model['tanggal_guna']), "l, d-m-Y");
+				[
+					'name'=>'tanggal_guna', 
+					'header'=>'Tanggal', 
+					'type' => 'raw',
+					'value' => function($model) {
+						$date = explode(';', $model['tanggal_guna']);
+						$length = count($date);
+						if($model['jumlah_hari'] == 1 || $model['jumlah_hari'] == 0)
+						{
+							return date_format(date_create($model['tanggal_guna']), "l, d-m-Y");
+						}
+						$dateReturn = "";
+						foreach($date as $date){
+							$dateReturn .= date_format(date_create($date), "l, d-m-Y")."</br>";
+						}
+						return $dateReturn;
 					}
-					$dateReturn = "";
-					foreach($date as $date){
-						$dateReturn .= date_format(date_create($date), "l, d-m-Y")."</br>";
+				],
+				[
+					'name'=>'jam', 
+					'header'=>'Sesi',
+					'value' => function($model){
+						return $model['jam']."-".$model['jam_selesai'];
 					}
-					return $dateReturn;
-				}
-			],
-			[
-				'name'=>'jam', 
-				'header'=>'Sesi',
-				'value' => function($model){
-					return $model['jam']."-".$model['jam_selesai'];
-				}
-			],
-			array('name'=>'mata_kuliah', 'header'=>'Mata Kuliah'),
-			array('name'=>'kelas', 'header'=>'Ruang'),
-			[
-				'name' => 'status',
-				'type' => 'raw',
-				'value' => function($model){
-					switch ($model['status']) {
-						case 0:
-							$status = '<i class="fa fa-times"></i> Ditolak';
-							break;
-						
-						case 2:
-							$status = '<i class="fa fa-check"></i> Disetujui';
-							break;
-						
-						case 1:
-							$status = '<i class="fa fa-print"></i> Diajukan';
-							break;
-						default:
-							# code...
-							break;
+				],
+				array('name'=>'mata_kuliah', 'header'=>'Mata Kuliah'),
+				array('name'=>'kelas', 'header'=>'Ruang'),
+				[
+					'name' => 'status',
+					'type' => 'raw',
+					'value' => function($model){
+						switch ($model['status']) {
+							case 0:
+								$status = '<i class="fa fa-times"></i> Ditolak';
+								break;
+							
+							case 2:
+								$status = '<i class="fa fa-check"></i> Disetujui';
+								break;
+							
+							case 1:
+								$status = '<i class="fa fa-print"></i> Diajukan';
+								break;
+							default:
+								# code...
+								break;
+						}
+						return $status;
 					}
-					return $status;
-				}
+				],
+				[
+					'name'=>'hapus', 
+					'header'=>'Aksi', 
+					'type' => 'raw',  
+					'value' => function($model){
+						if($model['status'] == 0){
+							return '<div class="btn-group" role="group" aria-label="Basic example">'.
+							CHtml::link('<i class="fa fa-print"></i>', ['cetak', 'id' => $model['id']], [
+								'class' => 'btn btn-xs btn-default',
+								'onClick' => "return !window.open(this.href, 'Cetak', 'width=1024,height=768')"
+							]).
+							'</div>'
+							;
+						}
+						return '<div class="btn-group" role="group" aria-label="Basic example">'.
+						CHtml::link('<i class="fa fa-print"></i>', ['cetak', 'id' => $model['id']], [
+							'class' => 'btn btn-xs btn-default',
+							'onClick' => "return !window.open(this.href, 'Cetak', 'width=1024,height=768')"
+						]).
+						CHtml::link("Tolak <i class='fa fa-times'></i>", false, [
+							'class' => 'btn btn-xs btn-danger', 
+							// 'confirm' => "Yakin membatalkan ini?",
+							'method' => 'POST',
+							'data-toggle' => 'modal',
+							'data-target' => '#myModal',
+							'data-href' => Yii::app()->createUrl('pakaiRuang/tolak', ['id' => $model['id']])
+						]).
+						CHtml::link("Setuju <i class='fa fa-check'></i>", false, [
+							'class' => 'btn btn-xs btn-info', 
+							// 'confirm' => "Yakin membatalkan ini?",
+							'method' => 'POST',
+							'data-toggle' => 'modal',
+							'data-target' => '#myModal',
+							'data-href' => Yii::app()->createUrl('pakaiRuang/setuju', ['id' => $model['id']])
+						]).
+						'</div>'
+						;
+					},
+				],
 			],
-			[
-				'name'=>'hapus', 
-				'header'=>'Aksi', 
-				'type' => 'raw',  
-				'value' => function($model){
-					return '<div class="btn-group" role="group" aria-label="Basic example">'.
-					CHtml::link('<i class="fa fa-print"></i>', ['cetak', 'id' => $model['id']], [
-						'class' => 'btn btn-xs btn-default',
-						'onClick' => "return !window.open(this.href, 'Cetak', 'width=1024,height=768')"
-					]).
-					CHtml::link("Tolak <i class='fa fa-times'></i>", false, [
-						'class' => 'btn btn-xs btn-danger', 
-						// 'confirm' => "Yakin membatalkan ini?",
-						'method' => 'POST',
-						'data-toggle' => 'modal',
-						'data-target' => '#myModal',
-						'data-href' => Yii::app()->createUrl('pakaiRuang/tolak', ['id' => $model['id']])
-					]).
-					CHtml::link("Setuju <i class='fa fa-check'></i>", false, [
-						'class' => 'btn btn-xs btn-info', 
-						// 'confirm' => "Yakin membatalkan ini?",
-						'method' => 'POST',
-						'data-toggle' => 'modal',
-						'data-target' => '#myModal',
-						'data-href' => Yii::app()->createUrl('pakaiRuang/setuju', ['id' => $model['id']])
-					]).
-					'</div>'
-					;
-				},
-			],
-		],
     )
 );
 $fwd = ob_get_contents();
