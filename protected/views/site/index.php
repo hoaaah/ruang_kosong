@@ -603,50 +603,49 @@ foreach($t as $t):;
 				'.substr($t['col20'],0,6).'
 			</div>';
 		}
-	/*	IF($t['col21'] == NULL && !$checkRuangBidang){
-			echo'
-			<div class="Cell">
-				'.$form->checkBox($model,'col21').'
-			</div>';
-			}ELSE{
-				//$form->checkBox($model,'col2',array('disabled'=>'true'))
-			echo'
-			<div class="Cellblock">
-				'.CHtml::link(substr($t['col21'],0,6), array('del', 'id'=>$t['kelas_id'].'-21-'.$tanggal->format('Y-m-d'))).'
-			</div>';
-		}
-		IF($t['col22'] == NULL && !$checkRuangBidang){
-			echo'
-			<div class="Cell">
-				'.$form->checkBox($model,'col22').'
-			</div>';
-			}ELSE{
-				//$form->checkBox($model,'col2',array('disabled'=>'true'))
-			echo'
-			<div class="Cellblock">
-				'.CHtml::link(substr($t['col22'],0,6), array('del', 'id'=>$t['kelas_id'].'-22-'.$tanggal->format('Y-m-d'))).'
-			</div>';
-		}
-	*/
-	/*		echo'
-			<div class="Cell">
-				'.$form->textField($model,'mata_kuliah', array('style'=>'width:50px')).'
-			</div>';
-	*/
-			IF(ISSET($this->user_log['jurusan_id']) && ISSET($this->user_log['semester'])){
-				echo CHtml::activeDropDownList($model, 'mata_kuliah', $mk, array('prompt'=>'--', 'style'=>'width:50px'));
-			}ELSE{
-				echo'
-				<div class="Cell">
-					'.$form->textField($model,'mata_kuliah', array('style'=>'width:50px')).'
-				</div>';
-			}
-			echo'
-			<div class="Cell">
-				'.CHtml::submitButton('Book').'
+		// IF(ISSET($this->user_log['jurusan_id']) && ISSET($this->user_log['semester'])){
+		// 	echo CHtml::activeDropDownList($model, 'mata_kuliah', $mk, array('prompt'=>'--', 'style'=>'width:50px'));
+		// }ELSE{
+		// 	echo'
+		// 	<div class="Cell">
+		// 		'.$form->textField($model,'mata_kuliah', array('style'=>'width:50px')).'
+		// 	</div>';
+		// }
+		echo'
+				<!-- <div class="Cell">
+					'.CHtml::submitButton('Book').'
+				</div> -->
 			</div>
-		</div>
-	';
+		';
 	$this->endWidget();
 endforeach;?>
 </div>
+<?php 
+Yii::app()->clientScript->registerScript('myjquery', <<<JS
+	$('form#Bookguna-form').on('beforeSubmit',function(e)
+	{
+		// alert("data");
+		// var \$form = $(this);
+		// $.post(
+		// 	\$form.attr("action"), //serialize Yii2 form 
+		// 	\$form.serialize()
+		// )
+		// 	.done(function(result){
+		// 		if(result == 1)
+		// 		{
+		// 			$("#myModalubah").modal('hide'); //hide modal after submit
+		// 			//$(\$form).trigger("reset"); //reset form to reuse it to input
+		// 			$.pjax.reload({container:'#sekolah-pjax'});
+		// 		}else
+		// 		{
+		// 			$("#message").html(result);
+		// 		}
+		// 	}).fail(function(){
+		// 		console.log("server error");
+		// 	});
+		// return false;
+	});
+JS
+// , CClientScript::POS_END
+);
+?>
