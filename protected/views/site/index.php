@@ -4,7 +4,7 @@ $gridDataProvider = new CArrayDataProvider($fwdtbl, array('keyField' => 'id','pa
 // $gridColumns
 $gridColumns = array(
 	array('name'=>'jam', 'header'=>'Sesi'),
-	array('name'=>'mata_kuliah', 'header'=>'Mata Kuliah'),
+	array('name'=>'mata_kuliah', 'header'=>'Kegiatan'),
 	array('name'=>'kelas', 'header'=>'Ruang'),
 //	array('name'=>'hapus', 'header'=>'Aksi', 'type' => 'raw',  'value' =>'CHtml::link("Bantal ".CHtml::image(Yii::app()->request->baseUrl."/images/delete.png"),Yii::app()->createUrl("user/bantal", array("id"=>$data["id"])))', 'htmlOptions'=>array('nowrap' =>'nowrap', 'onclick' =>"js:alert('Yakin menghapus?')")),
 	array('name'=>'hapus', 'header'=>'Aksi', 'type' => 'raw',  'value' =>'CHtml::link("Bantal ".CHtml::image(Yii::app()->request->baseUrl."/images/delete.png"),Yii::app()->createUrl("user/bantal", array("id"=>$data["id"])))', 'htmlOptions'=>array('nowrap' =>'nowrap', 'onclick' =>"return confirm('Anda yakin?');")),

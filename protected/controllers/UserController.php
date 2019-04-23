@@ -262,16 +262,24 @@ class UserController extends Controller
 			ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();
 				Saat ini yg dibawah nampilin semua jadwal sampe banyak banget
 				*/
-			$fwdtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah FROM
-			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
+			$fwdtbl= Yii::app()->db->createCommand('SELECT 
+			CASE
+				WHEN a.status = 1 THEN 0
+				ELSE 1
+			END AS urutan_status,
+			GROUP_CONCAT(a.id SEPARATOR ".") AS id, a.status, GROUP_CONCAT(a.tanggal_guna SEPARATOR";") AS tanggal_guna, a.session_start, a.session_end, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, CONCAT(LEFT(e.name,2),".",MID(e.name,3,2)) AS jam_selesai, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, a.jumlah_hari FROM
+			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start, SUBSTRING_INDEX(a.session_length,".", -1) AS session_end
 			FROM r_guna a 
-			WHERE a.tanggal_guna >= "'.date('Y-m-d').'"  AND user_id = '.Yii::app()->user->Id.' AND a.status = 1)
+			WHERE a.tanggal_guna >= "'.date('Y-m-d').'"  AND (a.status = 1 OR a.status = 2)
+			)
 			a
 			INNER JOIN r_session b ON a.session_start = b.id
 			INNER JOIN r_kelas c ON a.kelas_id = c.id
+			INNER JOIN r_session e ON a.session_end = e.id
 			-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
-			ORDER BY tanggal_guna ASC, session_start ASC')->queryAll();  
-			$prvtbl= Yii::app()->db->createCommand('SELECT a.id, a.tanggal_guna,a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, CASE WHEN a.status = 0 THEN "Batal" END AS status FROM
+			GROUP BY a.user_id, a.kelas_id, a.session_length, a.mata_kuliah, a.dari, a.jumlah_peserta, a.penanggung_jawab, a.konsumsi, a.tor_kak, a.yang_mengajukan, a.jumlah_hari
+			ORDER BY urutan_status ASC, tanggal_guna DESC, session_start ASC')->queryAll();  
+			$prvtbl= Yii::app()->db->createCommand('SELECT a.id, GROUP_CONCAT(a.tanggal_guna SEPARATOR";") AS tanggal_guna, a.session_start, CONCAT(LEFT(b.name,2),".",MID(b.name,3,2)) AS jam, a.user_id, a.kelas_id, c.kelas, a.mata_kuliah AS id_kuliah, a.mata_kuliah AS mata_kuliah, CASE WHEN a.status = 0 THEN "Ditolak" END AS status, a.jumlah_hari  FROM
 			(SELECT a.*, SUBSTRING_INDEX(a.session_length,".", 1) AS session_start
 			FROM r_guna a 
 			WHERE (a.tanggal_guna < "'.date('Y-m-d').'" OR status = 0) AND user_id = '.Yii::app()->user->Id.')
@@ -279,6 +287,7 @@ class UserController extends Controller
 			INNER JOIN r_session b ON a.session_start = b.id
 			INNER JOIN r_kelas c ON a.kelas_id = c.id
 			-- INNER JOIN r_mata_kuliah d ON a.mata_kuliah = d.id
+			GROUP BY a.user_id, a.kelas_id, a.session_length, a.mata_kuliah, a.dari, a.jumlah_peserta, a.penanggung_jawab, a.konsumsi, a.tor_kak, a.yang_mengajukan, a.jumlah_hari
 			ORDER BY tanggal_guna DESC, session_start ASC')->queryAll();                        
 			//akhir bagian isi tabel
                     

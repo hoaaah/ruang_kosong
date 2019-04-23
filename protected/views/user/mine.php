@@ -54,7 +54,77 @@ $this->widget(
         'type' => 'striped bordered condensed',
         'dataProvider' => $gridDataProvider,
         'template' => "{items}\n{pager}",
-        'columns' => $gridColumns,
+        'columns' => [
+			[
+				'name'=>'tanggal_guna', 
+				'header'=>'Tanggal', 
+				'type' => 'raw',
+				'value' => function($model) {
+					$date = explode(';', $model['tanggal_guna']);
+					$length = count($date);
+					if($model['jumlah_hari'] == 1 || $model['jumlah_hari'] == 0)
+					{
+						return date_format(date_create($model['tanggal_guna']), "l, d-m-Y");
+					}
+					$dateReturn = "";
+					foreach($date as $date){
+						$dateReturn .= date_format(date_create($date), "l, d-m-Y")."</br>";
+					}
+					return $dateReturn;
+				}
+			],
+			[
+				'name'=>'jam', 
+				'header'=>'Sesi',
+				'value' => function($model){
+					return $model['jam']."-".$model['jam_selesai'];
+				}
+			],
+			array('name'=>'mata_kuliah', 'header'=>'Mata Kuliah'),
+			array('name'=>'kelas', 'header'=>'Ruang'),
+			[
+				'name' => 'status',
+				'type' => 'raw',
+				'value' => function($model){
+					switch ($model['status']) {
+						case 0:
+							$status = '<i class="fa fa-times"></i> Ditolak';
+							break;
+						
+						case 2:
+							$status = '<i class="fa fa-check"></i> Disetujui';
+							break;
+						
+						case 1:
+							$status = '<i class="fa fa-print"></i> Diajukan';
+							break;
+						default:
+							# code...
+							break;
+					}
+					return $status;
+				}
+			],
+			[
+				'name'=>'hapus', 
+				'header'=>'Aksi', 
+				'type' => 'raw',  
+				'value' => function($model){
+					if ($model['status'] != 0) return '<div class="btn-group" role="group" aria-label="Basic example">'.
+					CHtml::link('<i class="fa fa-print"></i>', ['cetak', 'id' => $model['id']], [
+						'class' => 'btn btn-xs btn-default',
+						'onClick' => "return !window.open(this.href, 'Cetak', 'width=1024,height=768')"
+					]).
+					CHtml::link("Bantal ".CHtml::image(Yii::app()->request->baseUrl."/images/delete.png"), ['bantal', 'id'=> $model['id']], [
+						'class' => 'btn btn-xs btn-default', 
+						'confirm' => "Yakin membatalkan ini?",
+						'method' => 'POST',
+					]).
+					'</div>'
+					;
+				},
+			],
+		],
     )
 );
 $fwd = ob_get_contents();
@@ -75,7 +145,24 @@ $this->widget(
 $gridDataProvider = new CArrayDataProvider($prvtbl, array('keyField' => 'id','pagination'=>array('pageSize'=> 8,)));
 // $gridColumns
 $gridColumns = array(
-	array('name'=>'tanggal_guna', 'header'=>'Tanggal', 'value' =>'date_format(date_create($data["tanggal_guna"]), "l, d-m-Y")'),
+	[
+		'name'=>'tanggal_guna', 
+		'header'=>'Tanggal', 
+		'type' => 'raw',
+		'value' => function($model) {
+			$date = explode(';', $model['tanggal_guna']);
+			$length = count($date);
+			if($model['jumlah_hari'] == 1 || $model['jumlah_hari'] == 0)
+			{
+				return date_format(date_create($model['tanggal_guna']), "l, d-m-Y");
+			}
+			$dateReturn = "";
+			foreach($date as $date){
+				$dateReturn .= date_format(date_create($date), "l, d-m-Y")."</br>";
+			}
+			return $dateReturn;
+		}
+	],
 	array('name'=>'jam', 'header'=>'Sesi'),
 	array('name'=>'mata_kuliah', 'header'=>'Mata Kuliah'),
 	array('name'=>'kelas', 'header'=>'Ruang'),
