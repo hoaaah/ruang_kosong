@@ -197,7 +197,7 @@ ENDIF; ?>
 </div><!-- form --> 
 <div class="Table">
 	<div class="Title">
-		<p>POLITEKNIK KEUANGAN NEGARA - STAN <?php IF(isset($this->user_log['preferred_building'])) echo ' (Gedung '.$gd['0']['name'].')' ?></p>
+		<p> <?php IF(isset($this->user_log['preferred_building'])) echo ' (Gedung '.$gd['0']['name'].')' ?></p>
 	</div>
 	<div class ="row">
 	  <?php 
